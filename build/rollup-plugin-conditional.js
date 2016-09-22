@@ -1,11 +1,5 @@
 'use strict';
 
-function ConditionalPlugin(options = {}) {
-  if (options.condition) {
-    Object.assign(this, options.plugin);
-  }
-}
-
-var index = (config) => new ConditionalPlugin(config);
+var index = (options = {}) => options.condition && options.plugin || (() => {});
 
 module.exports = index;
