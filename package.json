@@ -1,0 +1,26 @@
+{
+  "name": "rollup-plugin-conditional",
+  "version": "0.1.0",
+  "description": "A proxy plugin for conditionally executing rollup plugins",
+  "main": "build/rollup-plugin-conditional.js",
+  "jsnext:main": "build/rollup-plugin-conditional.es.js",
+  "homepage": "https://github.com/AgronKAbashi/rollup-plugin-conditional",
+  "scripts": {
+    "clean": "rm -rf build",
+    "build": "rollup -c",
+    "start": "npm run clean -s && npm run build -s"
+  },
+  "keywords": [
+    "rollup-plugin"
+  ],
+  "author": "Agron Kabashi",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.5.0",
+    "rollup": "^0.36.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgronKabashi/rollup-plugin-conditional.git"
+  }
+}
