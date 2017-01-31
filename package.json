@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A proxy plugin for conditionally executing rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "jsnext:main": "build/rollup-plugin-conditional.es.js",
