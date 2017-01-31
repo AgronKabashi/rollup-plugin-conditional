@@ -1,48 +1,68 @@
 import assert from "assert";
 import conditional from "../src";
 import {rollup} from "rollup";
-import samplePlugin from "./fixtures/samplePlugin";
+import * as samplePlugins from "./fixtures/samplePlugins";
 import sinon from "sinon";
 
 describe("rollup-plugin-conditional", () => {
-  let plugin;
-  let spy;
+  let plugins;
+  let spies;
 
-  const createRollup = (condition, plugin) => {
+  const createRollup = (condition, config) => {
     return rollup({
       entry: "./test/fixtures/sourcecode",
       plugins: [
         conditional({
           condition,
-          plugin
+          ...config
         })
       ]
     });
   };
 
-  beforeEach(() => {
-    plugin = samplePlugin();
-    spy = sinon.spy(plugin, "load");
-  });
+  const calculateSpyCallCount = (spies) => spies.reduce((total, spy) => total + spy.callCount, 0)
 
-  it("should run a plugin if condition evaluates to true", (done) => {
-    createRollup(true, plugin).then(() => {
-      assert(spy.callCount === 1);
-      done();
+  describe("conditional statement", () => {
+    beforeEach(() => {
+      plugins = [
+        samplePlugins.simple(),
+        samplePlugins.transform()
+      ];
+
+      spies = plugins.map(plugin => sinon.spy(plugin, "load"))
+    });
+
+    it("should run all the plugins if condition evaluates to true", () => {
+      return createRollup(true, {plugins}).then(() => {
+        assert(calculateSpyCallCount(spies) === plugins.length);
+      });
+    });
+
+    it("should not run plugins if condition evaluates to false", () => {
+      return createRollup(false).then(() => {
+        assert(calculateSpyCallCount(spies) === 0);
+      });
+    });
+
+    it("should not run any plugins if no plugins are supplied", () => {
+      return createRollup(true).then(() => {
+        assert(calculateSpyCallCount(spies) === 0);
+      });
     });
   });
 
-  it("should not run a plugin if condition evaluates to false", (done) => {
-    createRollup(false).then(() => {
-      assert(spy.callCount === 0);
-      done();
+  describe("execution", () => {
+    beforeEach(() => {
+      plugins = [
+        samplePlugins.transform("transform1"),
+        samplePlugins.transform("transform2")
+      ];
     });
-  });
 
-  it("should not run a plugin if no plugin is supplied", (done) => {
-    createRollup(true).then(() => {
-      assert(spy.callCount === 0);
-      done();
-    });
-  });
+    it("should only execute the first plugin", () => {
+      return createRollup(true, {plugins}).then((args) => {
+        assert(args.modules[0].code === "var transform1variable = true;")
+      });
+    })
+  })
 });

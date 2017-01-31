@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "0.1.4",
+  "version": "1.0.0",
   "description": "A proxy plugin for conditionally executing rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "jsnext:main": "build/rollup-plugin-conditional.es.js",
@@ -12,16 +12,17 @@
     "test": "mocha --compilers js:babel-core/register"
   },
   "keywords": [
-    "rollup-plugin"
+    "rollup rollup-plugin"
   ],
   "author": "Agron Kabashi",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.14.0",
-    "babel-preset-es2015": "^6.14.0",
+    "babel-plugin-transform-object-rest-spread": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
     "eslint": "^3.5.0",
     "mocha": "^3.0.2",
-    "rollup": "^0.36.0",
+    "rollup": "^0.41.4",
     "sinon": "^1.17.6"
   },
   "repository": {

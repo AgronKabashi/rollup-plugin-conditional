@@ -13,19 +13,38 @@ npm install rollup-plugin-conditional --save-dev
 ## Usage
 
 ```js
-import uglify from "rollup-plugin-uglify";
 import conditional from "rollup-plugin-conditional";
+// import other plugins
+
+const isProduction = process.env.buildTarget === "PROD";
 
 export default {
   ...
   plugins: [
+    ...
     conditional({
-      condition: process.env.buildTarget === "PROD",
-      plugin: uglify()
+      condition: isProduction,
+      plugins: [
+        licence(),
+        strip(),
+        uglify(),
+        gzip()
+      ]
+    })
+
+    conditional({
+      condition: !isProduction,
+      plugins: [
+        filesize(),
+        watch()
+      ]
     })
   ]
 })
 ```
+
+## Versioning
+This project uses semantic versioning
 
 ## License
 MIT
