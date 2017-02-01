@@ -8,14 +8,11 @@ describe("rollup-plugin-conditional", () => {
   let plugins;
   let spies;
 
-  const createRollup = (condition, config) => {
+  const createRollup = (condition, plugins) => {
     return rollup({
       entry: "./test/fixtures/sourcecode",
       plugins: [
-        conditional({
-          condition,
-          ...config
-        })
+        conditional(condition, plugins)
       ]
     });
   };
@@ -33,7 +30,7 @@ describe("rollup-plugin-conditional", () => {
     });
 
     it("should run all the plugins if condition evaluates to true", () => {
-      return createRollup(true, {plugins}).then(() => {
+      return createRollup(true, plugins).then(() => {
         assert(calculateSpyCallCount(spies) === plugins.length);
       });
     });
@@ -60,7 +57,7 @@ describe("rollup-plugin-conditional", () => {
     });
 
     it("should only execute the first plugin", () => {
-      return createRollup(true, {plugins}).then((args) => {
+      return createRollup(true, plugins).then((args) => {
         assert(args.modules[0].code === "var transform1variable = true;")
       });
     })

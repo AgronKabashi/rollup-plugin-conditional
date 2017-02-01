@@ -5,12 +5,24 @@ function getFirstExecutablePlugin(apiName, plugins, ...args) {
   return plugins.reduce((result, plugin) => result || plugin[apiName] && plugin[apiName](...args), undefined);
 }
 
-export default (options = {}) => {
-  if (!options.condition || !Array.isArray(options.plugins) || options.plugins.length === 0) {
-    return {};
+export default (arg1 = {}, arg2) => {
+  let condition = false;
+  let plugins = [];
+
+  if (Array.isArray(arg2)) {
+    condition = !!arg1;
+    plugins = arg2;
+  }
+  // Deprecated in 1.1.0
+  else if (typeof arg1 === "object") {
+    console.warn("This syntax is deprecated, please use conditional(condition, plugins) instead.")
+    condition = !!arg1.condition
+    plugins = arg1.plugins
   }
 
-  const { plugins } = options;
+  if (!condition || !Array.isArray(plugins) || plugins.length === 0) {
+    return {};
+  }
 
   const constructedApi = {};
 

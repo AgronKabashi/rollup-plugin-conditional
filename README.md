@@ -22,23 +22,17 @@ export default {
   ...
   plugins: [
     ...
-    conditional({
-      condition: isProduction,
-      plugins: [
-        licence(),
-        strip(),
-        uglify(),
-        gzip()
-      ]
-    })
+    conditional(isProduction, [
+      licence(),
+      strip(),
+      uglify(),
+      gzip()
+    ]),
 
-    conditional({
-      condition: !isProduction,
-      plugins: [
-        filesize(),
-        watch()
-      ]
-    })
+    conditional(!isProduction, [
+      filesize(),
+      watch()
+    ])
   ]
 })
 ```

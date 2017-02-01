@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A proxy plugin for conditionally executing rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "jsnext:main": "build/rollup-plugin-conditional.es.js",
@@ -8,6 +8,7 @@
   "scripts": {
     "clean": "rm -rf build",
     "build": "rollup -c",
+    "publish": "npm run build && npm publish",
     "start": "npm run clean -s && npm run build -s",
     "test": "mocha --compilers js:babel-core/register"
   },
