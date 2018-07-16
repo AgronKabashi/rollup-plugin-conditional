@@ -1,7 +1,7 @@
 import { promisifiedSequence } from "./promisifiedSequence";
 import { sequence } from "./sequence";
 import { once } from "./once";
-import { always } from "./always";
+import { all } from "./all";
 import { codeTransformSequencer, stringConcatSequencer } from "./utilities";
 
 export default function conditional (condition, plugins) {
@@ -10,9 +10,9 @@ export default function conditional (condition, plugins) {
   }
 
   return {
-    buildStart: always(plugins, "buildStart"),
-    buildEnd: always(plugins, "buildEnd"),
-    generateBundle: always(plugins, "generateBundle"),
+    buildStart: all(plugins, "buildStart"),
+    buildEnd: all(plugins, "buildEnd"),
+    generateBundle: all(plugins, "generateBundle"),
     load: once(plugins, "load"),
     resolveId: once(plugins, "resolveId"),
     options: sequence(plugins, "options"),

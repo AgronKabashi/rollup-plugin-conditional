@@ -1,6 +1,6 @@
 import { byMethod } from "./utilities";
 
-export const always = (plugins, methodName) =>
+export const all = (plugins, methodName) =>
   (...args) => Promise.all([
     plugins
       .filter(byMethod(methodName))

@@ -66,7 +66,7 @@ const once = (plugins, methodName) =>
     .filter(byMethod(methodName))
     .reduceRight((output, plugin) => output || plugin[methodName](...args), null);
 
-const always = (plugins, methodName) =>
+const all = (plugins, methodName) =>
   (...args) => Promise.all([
     plugins
       .filter(byMethod(methodName))
@@ -79,9 +79,9 @@ function conditional (condition, plugins) {
   }
 
   return {
-    buildStart: always(plugins, "buildStart"),
-    buildEnd: always(plugins, "buildEnd"),
-    generateBundle: always(plugins, "generateBundle"),
+    buildStart: all(plugins, "buildStart"),
+    buildEnd: all(plugins, "buildEnd"),
+    generateBundle: all(plugins, "generateBundle"),
     load: once(plugins, "load"),
     resolveId: once(plugins, "resolveId"),
     options: sequence(plugins, "options"),
