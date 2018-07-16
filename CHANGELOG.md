@@ -1,8 +1,8 @@
 # Changelog
 
 ## Version 2.0
-*not released*
-* Conforms to latest rollup API (0.62)
+*2018-07-16*
+* Conforms to latest rollup API (0.62). Make sure you use this version or higher.
 * Properly chains `transform` and `transformChunk`. This was broken in 1.1.1 since it only processed the first occurrence.
 
 ## Version 1.1.1

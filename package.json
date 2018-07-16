@@ -1,10 +1,10 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0",
   "description": "A proxy plugin for conditionally executing rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "module": "src/index.js",
-  "homepage": "https://github.com/AgronKAbashi/rollup-plugin-conditional",
+  "homepage": "https://github.com/AgronKabashi/rollup-plugin-conditional",
   "scripts": {
     "clean": "rm -rf build",
     "prepublishOnly": "npm test && npm start",
