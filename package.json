@@ -1,30 +1,42 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A proxy plugin for conditionally executing rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
-  "jsnext:main": "build/rollup-plugin-conditional.es.js",
-  "homepage": "https://github.com/AgronKAbashi/rollup-plugin-conditional",
+  "module": "src/index.js",
+  "homepage": "https://github.com/AgronKabashi/rollup-plugin-conditional",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "rollup -c",
-    "prepublish": "npm run build",
-    "start": "npm run clean -s && npm run build -s",
-    "test": "mocha --compilers js:babel-core/register"
+    "prepublishOnly": "npm test && npm start",
+    "start": "npm run clean -s && rollup -c",
+    "test": "NODE_PATH=src mocha --require @babel/register"
   },
   "keywords": [
-    "rollup rollup-plugin"
+    "rollup",
+    "rollup-plugin"
   ],
-  "author": "Agron Kabashi",
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "author": {
+    "name": "Agron Kabashi",
+    "email": "agron.kabashi@tretton37.com"
+  },
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.14.0",
-    "babel-plugin-transform-object-rest-spread": "^6.22.0",
-    "babel-preset-es2015": "^6.22.0",
-    "eslint": "^3.5.0",
-    "mocha": "^3.0.2",
-    "rollup": "^0.41.4",
-    "sinon": "^1.17.6"
+    "@agronkabashi/eslint-config": "^1.0.2",
+    "@babel/core": "^7.0.0-beta.53",
+    "@babel/polyfill": "^7.0.0-beta.53",
+    "@babel/preset-env": "^7.0.0-beta.53",
+    "@babel/register": "^7.0.0-beta.53",
+    "babel-eslint": "^8.2.6",
+    "eslint": "^5.1.0",
+    "mocha": "^5.2.0",
+    "rollup": "^0.62.0",
+    "sinon": "^6.1.3"
+  },
+  "peerDependencies": {
+    "rollup": ">=0.60"
   },
   "repository": {
     "type": "git",
