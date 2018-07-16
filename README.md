@@ -2,7 +2,7 @@
 A proxy plugin for conditionally executing rollup plugins.
 
 ## Why
-There are times when you only want to run a plugin if a certain condition is met. This plugin aims to simplify that setup.
+There are times when you only want to run a plugin if certain conditions are met. This plugin aims to simplify that setup.
 
 ## Installation
 
@@ -35,6 +35,21 @@ export default {
     ])
   ]
 })
+```
+
+It's also possible to nest conditionals but the recommendation is to keep the plugins as flat as possible:
+```js
+export default {
+  ...
+  plugins: [
+    conditional(!isProduction, [
+      conditional(isLocalBuild, [
+        eslint()
+      ]),
+      watch()
+    ])
+  ]
+};
 ```
 
 ## Versioning

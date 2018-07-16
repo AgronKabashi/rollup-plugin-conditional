@@ -1,66 +1,97 @@
 'use strict';
 
-const pluginApi = [
-  'load',
-  'resolveId',
-  'transform',
-  'transformBundle'
-];
+const byMethod = methodName => plugin => plugin[methodName];
 
-const pluginApiCallbacks = [
-  'ongenerate',
-  'onwrite'
-];
+const codeTransformSequencer = (plugin, methodName) =>
+  (previousResult = "") => {
+    const input = typeof previousResult === "object" ? previousResult.code : previousResult;
+    return plugin[methodName](input) || previousResult;
+  };
 
-const pluginApiStringInjections = [
-  'intro',
-  'outro',
-  'banner',
-  'footer'
-];
+const stringConcatSequencer = (plugin, methodName) =>
+  async (previousResult = "") => {
+    let result = await Promise.resolve(plugin[methodName]());
+    result = result && `\n${result}` || "";
+    return `${previousResult}${result}`;
+  };
 
-function getFirstExecutablePlugin(apiName, plugins, ...args) {
-  // Will return the result of the very first plugin that supports the api call and doesn't return a falsy value
-  return plugins.reduce((result, plugin) => result || plugin[apiName] && plugin[apiName](...args), undefined);
-}
+/**
+ * Run the specified plugins in sequence, passing the output to the next plugin in the queue
+ * @param {Array<{}>} plugins Collection of rollup plugins
+ * @param {string} methodName Name of plugin API method to filter by and execute
+ * @param {Function} callback Callback method for handling the result of each plugin.methodName call
+ * @returns {Function} A reduced function that returns the final result of all the plugins' results
+ */
+const promisifiedSequence = (plugins, methodName, callback) =>
+  (...args) => {
+    const [firstPlugin, ...restPlugins] = plugins.filter(byMethod(methodName));
 
-var index = (arg1 = {}, arg2) => {
-  let condition = false;
-  let plugins = [];
+    if (!restPlugins.length && !firstPlugin) {
+      return null;
+    }
 
-  if (Array.isArray(arg2)) {
-    condition = !!arg1;
-    plugins = arg2;
-  }
-  // Deprecated in 1.1.0
-  else if (typeof arg1 === "object") {
-    console.warn("This syntax is deprecated, please use conditional(condition, plugins) instead.");
-    condition = !!arg1.condition;
-    plugins = arg1.plugins;
-  }
+    const startingValue = Promise.resolve(callback(firstPlugin, methodName)(...args));
 
+    return restPlugins.reduce((result, plugin) =>
+      result.then(callback(plugin, methodName)), startingValue);
+  };
+
+/**
+ * Run the specified plugins in sequence, passing the output to the next plugin in the queue
+ * @param {Array<{}>} plugins Collection of rollup plugins
+ * @param {string} methodName Name of plugin API method to filter by and execute
+ * @returns {Function} A reduced function that returns the final result of all the plugins' results
+ */
+const sequence = (plugins, methodName) =>
+  (...args) => {
+    const [firstPlugin, ...restPlugins] = plugins.filter(byMethod(methodName));
+
+    if (!restPlugins.length && !firstPlugin) {
+      return null;
+    }
+
+    const startingValue = firstPlugin[methodName](...args);
+
+    return restPlugins.reduce((result, plugin) => plugin[methodName](result), startingValue);
+  };
+
+/**
+ * Find and return the result of the last plugin in the collection that returns a truthy value
+ * @param {Array<{}>} plugins Collection of rollup plugins
+ * @param {string} methodName Name of plugin API method to filter by and execute
+ * @returns {Function} Reduced function that returns the truthy result of the last plugin in the colleciton
+ */
+const once = (plugins, methodName) =>
+  (...args) => plugins
+    .filter(byMethod(methodName))
+    .reduceRight((output, plugin) => output || plugin[methodName](...args), null);
+
+const always = (plugins, methodName) =>
+  (...args) => Promise.all([
+    plugins
+      .filter(byMethod(methodName))
+      .map(plugin => Promise.resolve(plugin[methodName](...args)))
+  ]);
+
+function conditional (condition, plugins) {
   if (!condition || !Array.isArray(plugins) || plugins.length === 0) {
     return {};
   }
 
-  const constructedApi = {};
+  return {
+    buildStart: always(plugins, "buildStart"),
+    buildEnd: always(plugins, "buildEnd"),
+    generateBundle: always(plugins, "generateBundle"),
+    load: once(plugins, "load"),
+    resolveId: once(plugins, "resolveId"),
+    options: sequence(plugins, "options"),
+    transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
+    transformChunk: promisifiedSequence(plugins, "transformChunk", codeTransformSequencer),
+    intro: promisifiedSequence(plugins, "intro", stringConcatSequencer),
+    outro: promisifiedSequence(plugins, "outro", stringConcatSequencer),
+    banner: promisifiedSequence(plugins, "banner", stringConcatSequencer),
+    footer: promisifiedSequence(plugins, "footer", stringConcatSequencer)
+  };
+}
 
-  pluginApi.reduce((api, apiName) => {
-    api[apiName] = (...args) => getFirstExecutablePlugin(apiName, plugins, ...args);
-    return api;
-  }, constructedApi);
-
-  pluginApiCallbacks.reduce((api, apiName) => {
-    api[apiName] = (...args) => plugins.forEach(plugin => plugin[apiName] && plugin[apiName](...args));
-    return api;
-  }, constructedApi);
-
-  pluginApiStringInjections.reduce((api, apiName) => {
-    api[apiName] = (...args) => plugins.reduce((result, plugin) => result + (plugin[apiName] && plugin[apiName](...args) || ''), '');
-    return api;
-  }, constructedApi);
-
-  return constructedApi;
-};
-
-module.exports = index;
+module.exports = conditional;

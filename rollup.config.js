@@ -1,15 +1,9 @@
-const packageJson = require("./package.json");
+import packageJson from "./package.json";
 
 export default {
-  entry: "src/index.js",
-  targets: [
-    {
-      dest: packageJson.main,
-      format: "cjs"
-    },
-    {
-      dest: packageJson["jsnext:main"],
-      format: "es"
-    }
-  ]
+  input: "src/conditional.js",
+  output: {
+    file: packageJson.main,
+    format: "cjs"
+  }
 };
