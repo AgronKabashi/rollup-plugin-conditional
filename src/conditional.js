@@ -5,7 +5,12 @@ import { all } from "./all";
 import { codeTransformSequencer, stringConcatSequencer } from "./utilities";
 
 export default function conditional (condition, plugins) {
-  if (!condition || !Array.isArray(plugins) || plugins.length === 0) {
+  if (!condition) {
+    return {};
+  }
+
+  plugins = typeof plugins === "function" ? plugins() : plugins; // eslint-disable-line no-param-reassign
+  if (!Array.isArray(plugins) || !plugins.length) {
     return {};
   }
 

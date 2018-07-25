@@ -51,4 +51,39 @@ describe("conditional", () => {
     await createRollup(true, plugins);
     assert(spy.calledTwice);
   });
+
+  it("should be able to accept a function that returns a list of plugins to avoid side effects", async () => {
+    const sideEffectSpy = sinon.spy();
+    const pluginLoadSpy = sinon.spy();
+    const pluginSpy = sinon.spy(() => {
+      sideEffectSpy();
+
+      return {
+        load: pluginLoadSpy
+      };
+    });
+
+    const pluginsWithSideEffects = [
+      pluginSpy()
+    ];
+
+    await createRollup(false, pluginsWithSideEffects);
+    assert(sideEffectSpy.callCount === 1);
+    assert(pluginLoadSpy.callCount === 0);
+    assert(pluginSpy.callCount === 1);
+
+    sideEffectSpy.resetHistory();
+    pluginLoadSpy.resetHistory();
+    pluginSpy.resetHistory();
+
+    const pluginsWithSideEffectsProtected = () => [
+      pluginSpy()
+    ];
+
+    await createRollup(false, pluginsWithSideEffectsProtected);
+
+    assert(sideEffectSpy.callCount === 0);
+    assert(pluginLoadSpy.callCount === 0);
+    assert(pluginSpy.callCount === 0);
+  });
 });
