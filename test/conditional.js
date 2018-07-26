@@ -52,19 +52,19 @@ describe("conditional", () => {
     assert(spy.calledTwice);
   });
 
-  it("should be able to be a function to avoid side effects", async () => {
+  it("should be able to accept a function that returns a list of plugins to avoid side effects", async () => {
     const sideEffectSpy = sinon.spy();
     const pluginLoadSpy = sinon.spy();
     const pluginSpy = sinon.spy(() => {
       sideEffectSpy();
 
       return {
-        load: pluginLoadSpy,
+        load: pluginLoadSpy
       };
     });
 
     const pluginsWithSideEffects = [
-      pluginSpy(),
+      pluginSpy()
     ];
 
     await createRollup(false, pluginsWithSideEffects);
@@ -77,7 +77,7 @@ describe("conditional", () => {
     pluginSpy.resetHistory();
 
     const pluginsWithSideEffectsProtected = () => [
-      pluginSpy(),
+      pluginSpy()
     ];
 
     await createRollup(false, pluginsWithSideEffectsProtected);

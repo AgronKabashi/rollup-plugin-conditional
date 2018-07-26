@@ -4,34 +4,28 @@ import { once } from "./once";
 import { all } from "./all";
 import { codeTransformSequencer, stringConcatSequencer } from "./utilities";
 
-const getPluginList = (plugins) => {
-  if (typeof plugins === 'function') {
-    return plugins();
-  } else if (Array.isArray(plugins)) {
-    return plugins;
-  } else {
-    return [];
-  }
-}
-
 export default function conditional (condition, plugins) {
   if (!condition) {
     return {};
   }
 
-  const pluginList = getPluginList(plugins);
-  return pluginList.length ? {
-    buildStart: all(pluginList, "buildStart"),
-    buildEnd: all(pluginList, "buildEnd"),
-    generateBundle: all(pluginList, "generateBundle"),
-    load: once(pluginList, "load"),
-    resolveId: once(pluginList, "resolveId"),
-    options: sequence(pluginList, "options"),
-    transform: promisifiedSequence(pluginList, "transform", codeTransformSequencer),
-    transformChunk: promisifiedSequence(pluginList, "transformChunk", codeTransformSequencer),
-    intro: promisifiedSequence(pluginList, "intro", stringConcatSequencer),
-    outro: promisifiedSequence(pluginList, "outro", stringConcatSequencer),
-    banner: promisifiedSequence(pluginList, "banner", stringConcatSequencer),
-    footer: promisifiedSequence(pluginList, "footer", stringConcatSequencer)
-  } : {};
+  plugins = typeof plugins === "function" ? plugins() : plugins; // eslint-disable-line no-param-reassign
+  if (!Array.isArray(plugins) || !plugins.length) {
+    return {};
+  }
+
+  return {
+    buildStart: all(plugins, "buildStart"),
+    buildEnd: all(plugins, "buildEnd"),
+    generateBundle: all(plugins, "generateBundle"),
+    load: once(plugins, "load"),
+    resolveId: once(plugins, "resolveId"),
+    options: sequence(plugins, "options"),
+    transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
+    transformChunk: promisifiedSequence(plugins, "transformChunk", codeTransformSequencer),
+    intro: promisifiedSequence(plugins, "intro", stringConcatSequencer),
+    outro: promisifiedSequence(plugins, "outro", stringConcatSequencer),
+    banner: promisifiedSequence(plugins, "banner", stringConcatSequencer),
+    footer: promisifiedSequence(plugins, "footer", stringConcatSequencer)
+  };
 }

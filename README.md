@@ -52,8 +52,38 @@ export default {
 };
 ```
 
+### Special cases
+Unfortunately some plugins, like rollup-plugin-serve, always assume that they will be executed so they perform some premature tasks before any of the life cycle hooks are called:
+
+```js
+import serve from "rollup-plugin-serve";
+
+export default {
+  ...
+  plugins: [
+    conditional(false, [ // false here will prevent any of the plugins' life cycle hooks from being executed
+      // This plugin however will create a http(s)-server immediately and outside any of the life cycle hooks
+      // resulting in the http-server running even though we don't want it to.
+      serve()
+    ])
+  ]
+};
+```
+
+In order to work around this we need to defer the initialisation by simply providing a callback method that returns the plugins:
+
+```js
+import serve from "rollup-plugin-serve";
+
+export default {
+  ...
+  plugins: [
+    conditional(false, () => [ // Notice the arrow function.
+      serve()
+    ])
+  ]
+};
+```
+
 ## Versioning
 This project uses semantic versioning
-
-## License
-MIT

@@ -1,6 +1,11 @@
 # Changelog
 
-## Version 2.0
+## Version 2.1.0
+*2018-07-26*
+* Added support for deferred initialization of rollup plugins. Prevents plugins from causing side effects.
+  - Special thanks to [chambo-e](https://github.com/chambo-e) for making it possible.
+
+## Version 2.0.0
 *2018-07-16*
 * Conforms to latest rollup API (0.62). Make sure you use this version or higher.
 * Properly chains `transform` and `transformChunk`. This was broken in 1.1.1 since it only processed the first occurrence.
