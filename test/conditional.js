@@ -2,7 +2,7 @@ import assert from "assert";
 import * as samplePlugins from "./fixtures/samplePlugins";
 import sinon from "sinon";
 import { createRollup } from "./utilities/createRollupConfig";
-import conditional from "../src/conditional";
+import conditional from "../src";
 
 let plugins;
 let spies;

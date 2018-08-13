@@ -1,5 +1,5 @@
 import { rollup } from "rollup";
-import conditional from "conditional";
+import conditional from "../../src";
 
 export const createRollup = (condition, plugins, input = "test/fixtures/simpleApp") =>
   rollup({

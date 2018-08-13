@@ -1,8 +1,11 @@
-export const byMethod = methodName => plugin => plugin[methodName];
+const ensureArray = input => Array.isArray(input) ? input : [input]; // TODO: Issue #4 - Reduce complexity
 
-export const codeTransformSequencer = (plugin, methodName) =>
+export const byMethod = methodNames => plugin => ensureArray(methodNames).some(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
+
+export const codeTransformSequencer = (plugin, methodNames) =>
   (previousResult = "") => {
     const input = typeof previousResult === "object" ? previousResult.code : previousResult;
+    const methodName = ensureArray(methodNames).find(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
     return plugin[methodName](input) || previousResult;
   };
 

@@ -1,3 +1,7 @@
+-u tdd
+--timeout 999999
+--colors
+--recursive
 --require @babel/register
 --require @babel/polyfill
 --recursive

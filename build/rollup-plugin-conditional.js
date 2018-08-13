@@ -1,10 +1,13 @@
 'use strict';
 
-const byMethod = methodName => plugin => plugin[methodName];
+const ensureArray = input => Array.isArray(input) ? input : [input]; // TODO: Issue #4 - Reduce complexity
 
-const codeTransformSequencer = (plugin, methodName) =>
+const byMethod = methodNames => plugin => ensureArray(methodNames).some(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
+
+const codeTransformSequencer = (plugin, methodNames) =>
   (previousResult = "") => {
     const input = typeof previousResult === "object" ? previousResult.code : previousResult;
+    const methodName = ensureArray(methodNames).find(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
     return plugin[methodName](input) || previousResult;
   };
 
@@ -91,7 +94,9 @@ function conditional (condition, plugins) {
     resolveId: once(plugins, "resolveId"),
     options: sequence(plugins, "options"),
     transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
-    transformChunk: promisifiedSequence(plugins, "transformChunk", codeTransformSequencer),
+    transformChunk: promisifiedSequence(plugins, ["transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
+    ongenerate: all(plugins, "ongenerate"), // TODO: Issue #4 - Reduce complexity
+    onwrite: all(plugins, "onwrite"), // TODO: Issue #4 - Reduce complexity
     intro: promisifiedSequence(plugins, "intro", stringConcatSequencer),
     outro: promisifiedSequence(plugins, "outro", stringConcatSequencer),
     banner: promisifiedSequence(plugins, "banner", stringConcatSequencer),

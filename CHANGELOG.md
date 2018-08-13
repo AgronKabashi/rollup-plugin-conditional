@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.1.1
+*2018-08-13*
+* Patch: API hook `transformBundle` wasn't removed as suggested by the docs and is still supported, [though deprecated](https://github.com/rollup/rollup/issues/2395). This patch adds backwards compatibility until rollup v1.0 is released. Changes will be reverted in [#4](https://github.com/AgronKabashi/rollup-plugin-conditional/issues/4).
+
 ## Version 2.1.0
 *2018-07-26*
 * Added support for deferred initialization of rollup plugins. Prevents plugins from causing side effects.

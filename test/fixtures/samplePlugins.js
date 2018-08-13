@@ -28,3 +28,25 @@ export function promisifiedTransform (transformId = "") {
     )
   };
 }
+
+export function transformChunk (id) {
+  return {
+    name: "transformChunk",
+    transformChunk (code) {
+      return {
+        code: `${code}\ntransformChunk${id}`
+      };
+    }
+  };
+}
+
+export function transformBundle (id) {
+  return {
+    name: "transformBundle",
+    transformBundle (code) {
+      return {
+        code: `${code}\ntransformBundle${id}`
+      };
+    }
+  };
+}
