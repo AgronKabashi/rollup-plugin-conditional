@@ -1,4 +1,4 @@
-# rollup-plugin-conditonal
+# rollup-plugin-conditional
 A proxy plugin for conditionally executing rollup plugins.
 
 ## Why

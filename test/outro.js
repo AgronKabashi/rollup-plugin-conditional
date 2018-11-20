@@ -15,6 +15,8 @@ export default simpleApp;`;
     const expected = `${sourceOutput}
 
 
+
+
 // Outro
 `;
 
@@ -32,6 +34,8 @@ export default simpleApp;`;
     ];
 
     const expected = `${sourceOutput}
+
+
 
 
 // Outro
@@ -60,6 +64,8 @@ export default simpleApp;`;
     ];
 
     const expected = `${sourceOutput}
+
+
 
 
 // Outro1

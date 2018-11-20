@@ -13,6 +13,7 @@ export default simpleApp;`;
     }];
 
     const expected = `
+
 // banner
 ${sourceOutput}
 `;
@@ -31,6 +32,7 @@ ${sourceOutput}
     ];
 
     const expected = `
+
 // banner
 ${sourceOutput}
 `;
@@ -58,6 +60,7 @@ ${sourceOutput}
     ];
 
     const expected = `
+
 // banner1
 // banner2
 // banner3
@@ -76,6 +79,7 @@ ${sourceOutput}
     }];
 
     const expected = `
+
 // banner
 var method = () => { };
 

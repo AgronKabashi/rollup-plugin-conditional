@@ -14,6 +14,7 @@ export default simpleApp;`;
 
     const expected = `${sourceOutput}
 
+
 // footer
 `;
 
@@ -31,6 +32,7 @@ export default simpleApp;`;
     ];
 
     const expected = `${sourceOutput}
+
 
 // footer
 `;
@@ -59,6 +61,7 @@ export default simpleApp;`;
 
     const expected = `${sourceOutput}
 
+
 // footer1
 // footer2
 // footer3
@@ -78,6 +81,7 @@ export default simpleApp;`;
     const expected = `var method = () => { };
 
 method();
+
 
 // footer
 `;

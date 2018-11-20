@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.2.0
+*2018-11-20*
+* Added support for new hooks, `renderStart` and `renderError`.
+
 ## Version 2.1.1
 *2018-08-13*
 * Patch: API hook `transformBundle` wasn't removed as suggested by the docs and is still supported, [though deprecated](https://github.com/rollup/rollup/issues/2395). This patch adds backwards compatibility until rollup v1.0 is released. Changes will be reverted in [#4](https://github.com/AgronKabashi/rollup-plugin-conditional/issues/4).

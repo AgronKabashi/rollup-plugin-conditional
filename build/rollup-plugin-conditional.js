@@ -94,7 +94,9 @@ function conditional (condition, plugins) {
     resolveId: once(plugins, "resolveId"),
     options: sequence(plugins, "options"),
     transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
-    transformChunk: promisifiedSequence(plugins, ["transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
+    renderChunk: promisifiedSequence(plugins, ["renderChunk", "transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
+    renderStart: all(plugins, "renderStart"),
+    renderError: all(plugins, "renderError"),
     ongenerate: all(plugins, "ongenerate"), // TODO: Issue #4 - Reduce complexity
     onwrite: all(plugins, "onwrite"), // TODO: Issue #4 - Reduce complexity
     intro: promisifiedSequence(plugins, "intro", stringConcatSequencer),

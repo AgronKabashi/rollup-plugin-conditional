@@ -40,6 +40,17 @@ export function transformChunk (id) {
   };
 }
 
+export function renderChunk (id) {
+  return {
+    name: "renderChunk",
+    renderChunk (code) {
+      return {
+        code: `${code}\nrenderChunk${id}`
+      };
+    }
+  };
+}
+
 export function transformBundle (id) {
   return {
     name: "transformBundle",

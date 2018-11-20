@@ -3,7 +3,7 @@ import sinon from "sinon";
 import { createRollup } from "./utilities/createRollupConfig";
 
 describe("buildStart", () => {
-  it("should call be called when build starts", async () => {
+  it("should be called when build starts", async () => {
     const plugins = [
       {
         buildStart: sinon.spy()
