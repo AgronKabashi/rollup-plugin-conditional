@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 3.0.0
+*2019-01-01*
+* Compatibility with rollup v1.0. Contains several under the hood changes such as removal of deprecated options and new API hooks.
+* Tests reworked to compare results against rollup itself. Should detect breaking changes much easier.
+
 ## Version 2.2.0
 *2018-11-20*
 * Added support for new hooks, `renderStart` and `renderError`.

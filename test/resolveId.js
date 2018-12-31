@@ -1,11 +1,8 @@
-import assert from "assert";
-import fs from "fs";
 import path from "path";
-import { createRollup } from "./utilities/createRollupConfig";
+import { compareRollupResults } from "./utilities";
 
 describe("resolveId", () => {
   const resolvedPath = path.resolve(__dirname, "fixtures/resolvedFileContents.js");
-  const resolvedContent = fs.readFileSync(resolvedPath);
 
   it("should call resolveId", async () => {
     const plugins = [
@@ -14,59 +11,49 @@ describe("resolveId", () => {
       }
     ];
 
-    const args = await createRollup(true, plugins);
-
-    assert.equal(args.modules[0].code, resolvedContent);
+    await compareRollupResults(plugins);
   });
 
-  it("should only use the last resolveId-method that returns a truthy value", async () => {
+  it("should only use the first resolveId-method that returns a truthy value", async () => {
     const plugins = [
       {
         resolveId: () => {}
       },
       {
-        resolveId: () => "some/path"
+        resolveId: () => resolvedPath
       },
       {
-        resolveId: () => resolvedPath
+        resolveId: () => "some/path"
       },
       {
         resolveId: () => null
       }
     ];
 
-    const args = await createRollup(true, plugins);
-
-    assert.equal(args.modules[0].code, resolvedContent);
+    await compareRollupResults(plugins);
   });
 
   it("should handle promises", async () => {
-    const plugins = [
-      {
-        resolveId: () => Promise.resolve(resolvedPath)
-      }
-    ];
+    const plugins = [{
+      resolveId: () => Promise.resolve(resolvedPath)
+    }];
 
-    const args = await createRollup(true, plugins);
-
-    assert.equal(args.modules[0].code, resolvedContent);
+    await compareRollupResults(plugins);
   });
 
   it("should handle a mix of promises and values", async () => {
     const plugins = [
       {
-        resolveId: () => "// resolved 1"
-      },
-      {
-        resolveId: () => Promise.resolve("// resolved 2")
-      },
-      {
         resolveId: () => new Promise(resolve => resolve(resolvedPath))
+      },
+      {
+        resolveId: () => Promise.resolve("// resolved 1")
+      },
+      {
+        resolveId: () => "// resolved 2"
       }
     ];
 
-    const args = await createRollup(true, plugins);
-
-    assert.equal(args.modules[0].code, resolvedContent);
+    await compareRollupResults(plugins);
   });
 });

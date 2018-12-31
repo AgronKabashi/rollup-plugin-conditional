@@ -1,8 +1,8 @@
 import assert from "assert";
-import * as samplePlugins from "./fixtures/samplePlugins";
 import sinon from "sinon";
-import { createRollup } from "./utilities/createRollupConfig";
-import conditional from "../src";
+import conditional from "index";
+import { createRollupWithConditional } from "./utilities";
+import * as samplePlugins from "./fixtures/samplePlugins";
 
 let plugins;
 let spies;
@@ -20,19 +20,19 @@ describe("conditional", () => {
   });
 
   it("should run all the plugins if condition evaluates to true", async () => {
-    await createRollup(true, plugins);
+    await createRollupWithConditional(true, plugins);
     const spyCount = getSpyCallCount(spies);
-    assert(spyCount === plugins.length, `Only ${spyCount} plugins were called, expected ${plugins.length}`);
+    assert.equal(spyCount, plugins.length, `Only ${spyCount} plugins were called, expected ${plugins.length}`);
   });
 
   it("should not run plugins if condition evaluates to false", async () => {
-    await createRollup(false);
-    assert(getSpyCallCount(spies) === 0);
+    await createRollupWithConditional(false);
+    assert.equal(getSpyCallCount(spies), 0);
   });
 
   it("should not run any plugins if no plugins are supplied", async () => {
-    await createRollup(true);
-    assert(getSpyCallCount(spies) === 0);
+    await createRollupWithConditional(true);
+    assert.equal(getSpyCallCount(spies), 0);
   });
 
   it("should be able to nest conditionals", async () => {
@@ -48,8 +48,13 @@ describe("conditional", () => {
       ])
     ];
 
-    await createRollup(true, plugins);
+    await createRollupWithConditional(true, plugins);
     assert(spy.calledTwice);
+  });
+
+  it("accepts a function that returns an array of plugins for deferred execution", async () => {
+    await createRollupWithConditional(true, () => plugins);
+    assert.equal(getSpyCallCount(spies), plugins.length);
   });
 
   it("should be able to accept a function that returns a list of plugins to avoid side effects", async () => {
@@ -67,10 +72,10 @@ describe("conditional", () => {
       pluginSpy()
     ];
 
-    await createRollup(false, pluginsWithSideEffects);
-    assert(sideEffectSpy.callCount === 1);
-    assert(pluginLoadSpy.callCount === 0);
-    assert(pluginSpy.callCount === 1);
+    await createRollupWithConditional(false, pluginsWithSideEffects);
+    assert.equal(sideEffectSpy.callCount, 1);
+    assert.equal(pluginLoadSpy.callCount, 0);
+    assert.equal(pluginSpy.callCount, 1);
 
     sideEffectSpy.resetHistory();
     pluginLoadSpy.resetHistory();
@@ -80,10 +85,10 @@ describe("conditional", () => {
       pluginSpy()
     ];
 
-    await createRollup(false, pluginsWithSideEffectsProtected);
+    await createRollupWithConditional(false, pluginsWithSideEffectsProtected);
 
-    assert(sideEffectSpy.callCount === 0);
-    assert(pluginLoadSpy.callCount === 0);
-    assert(pluginSpy.callCount === 0);
+    assert.equal(sideEffectSpy.callCount, 0);
+    assert.equal(pluginLoadSpy.callCount, 0);
+    assert.equal(pluginSpy.callCount, 0);
   });
 });

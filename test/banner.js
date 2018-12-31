@@ -1,46 +1,20 @@
-import assert from "assert";
-import { createRollup } from "./utilities/createRollupConfig";
-import { saveAndDiscardBundle } from "./utilities/saveAndDiscardBundle";
+import { compareRollupResults } from "./utilities";
 
 describe("banner", () => {
-  const sourceOutput = `var simpleApp = () => { };
-
-export default simpleApp;`;
-
   it("should add an banner", async () => {
     const plugins = [{
       banner: () => "// banner"
     }];
 
-    const expected = `
-
-// banner
-${sourceOutput}
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should handle promises", async () => {
-    const plugins = [
-      {
-        banner: () => Promise.resolve("// banner")
-      }
-    ];
+    const plugins = [{
+      banner: () => Promise.resolve("// banner")
+    }];
 
-    const expected = `
-
-// banner
-${sourceOutput}
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should add an banner for every plugin", async () => {
@@ -52,25 +26,14 @@ ${sourceOutput}
         banner () {}
       },
       {
-        banner: () => "// banner2"
+        banner: () => new Promise(resolve => setTimeout(() => resolve("// banner2"), 10))
       },
       {
-        banner: () => new Promise(resolve => setTimeout(() => resolve("// banner3"), 10))
+        banner: () => "// banner3"
       }
     ];
 
-    const expected = `
-
-// banner1
-// banner2
-// banner3
-${sourceOutput}
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should only be included once", async () => {
@@ -78,17 +41,6 @@ ${sourceOutput}
       banner: () => "// banner"
     }];
 
-    const expected = `
-
-// banner
-var method = () => { };
-
-method();
-`;
-
-    const bundle = await createRollup(true, plugins, "test/fixtures/importApp.js");
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins, "test/fixtures/importApp.js");
   });
 });

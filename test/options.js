@@ -1,7 +1,7 @@
 import assert from "assert";
 import fs from "fs";
 import path from "path";
-import { createRollup } from "./utilities/createRollupConfig";
+import { createRollupWithConditional } from "./utilities";
 
 describe("options", () => {
   const resolvedPath = path.resolve(__dirname, "fixtures/resolvedFileContents.js");
@@ -17,9 +17,9 @@ describe("options", () => {
       }
     ];
 
-    const args = await createRollup(true, plugins);
+    const args = await createRollupWithConditional(true, plugins);
 
-    assert.equal(args.modules[0].code, resolvedContent);
+    assert.equal(args.cache.modules[0].code, resolvedContent);
   });
 
   it("should merge options of all plugins", async () => {
@@ -44,8 +44,8 @@ describe("options", () => {
       }
     ];
 
-    const args = await createRollup(true, plugins);
+    const args = await createRollupWithConditional(true, plugins);
 
-    assert.equal(args.modules[0].code, resolvedContent);
+    assert.equal(args.cache.modules[0].code, resolvedContent);
   });
 });

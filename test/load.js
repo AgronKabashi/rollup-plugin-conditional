@@ -1,5 +1,4 @@
-import assert from "assert";
-import { createRollup } from "./utilities/createRollupConfig";
+import { compareRollupResults } from "./utilities";
 
 describe("load", () => {
   it("should call load", async () => {
@@ -11,47 +10,37 @@ describe("load", () => {
       }
     ];
 
-    const args = await createRollup(true, plugins);
-
-    assert.equal(args.modules[0].code, plugins[0].load());
+    await compareRollupResults(plugins);
   });
 
-  it("should only use the last load-method that returns a truthy value", async () => {
-    const expected = "// Load 2";
-
+  it("should only use the first load-method that returns a truthy value", async () => {
     const plugins = [
       {
         load: () => {}
       },
       {
-        load: () => "// Load"
+        load: () => "// Load1"
       },
       {
-        load: () => expected
+        load: () => "// Load2"
       },
       {
         load: () => null
       }
     ];
 
-    const args = await createRollup(true, plugins);
-    assert.equal(args.modules[0].code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should handle promises", async () => {
-    const expected = "// Load";
-
     const plugins = [{
-      load: () => Promise.resolve(expected)
+      load: () => Promise.resolve("// Load")
     }];
 
-    const args = await createRollup(true, plugins);
-    assert.equal(args.modules[0].code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should handle a mix of promises and values", async () => {
-    const expected = "// Load";
-
     const plugins = [
       {
         load: () => "// Load 1"
@@ -60,11 +49,10 @@ describe("load", () => {
         load: () => Promise.resolve("// Load 2")
       },
       {
-        load: () => new Promise(resolve => resolve(expected))
+        load: () => new Promise(resolve => resolve("// Load 3"))
       }
     ];
 
-    const args = await createRollup(true, plugins);
-    assert.equal(args.modules[0].code, expected);
+    await compareRollupResults(plugins);
   });
 });
