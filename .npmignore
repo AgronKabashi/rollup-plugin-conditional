@@ -1,3 +1,4 @@
 test
 rollup.config.js
 ISSUE_TEMPLATE.md
+.nyc_output
