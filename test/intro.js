@@ -1,26 +1,12 @@
-import assert from "assert";
-import { createRollup } from "./utilities/createRollupConfig";
-import { saveAndDiscardBundle } from "./utilities/saveAndDiscardBundle";
+import { compareRollupResults } from "./utilities";
 
 describe("intro", () => {
-  const sourceOutput = `var simpleApp = () => { };
-
-export default simpleApp;
-`;
-
   it("should add an intro", async () => {
     const plugins = [{
       intro: () => "// Intro"
     }];
 
-    const expected = `// Intro
-
-${sourceOutput}`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should handle promises", async () => {
@@ -30,14 +16,7 @@ ${sourceOutput}`;
       }
     ];
 
-    const expected = `// Intro
-
-${sourceOutput}`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should add an intro for every plugin", async () => {
@@ -49,22 +28,13 @@ ${sourceOutput}`;
         intro () {}
       },
       {
-        intro: () => "// Intro2"
+        intro: () => new Promise(resolve => setTimeout(() => resolve("// Intro2"), 10))
       },
       {
-        intro: () => new Promise(resolve => setTimeout(() => resolve("// Intro3"), 10))
+        intro: () => "// Intro3"
       }
     ];
 
-    const expected = `// Intro1
-// Intro2
-// Intro3
-
-${sourceOutput}`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins, "test/fixtures/importApp.js");
   });
 });

@@ -1,7 +1,6 @@
 import assert from "assert";
 import sinon from "sinon";
-import { createRollup } from "./utilities/createRollupConfig";
-import { saveAndDiscardBundle } from "./utilities/saveAndDiscardBundle";
+import { compareRollupResults } from "./utilities";
 
 describe("renderError", async () => {
   it("should be called if an error occurs when bundle is generated", async () => {
@@ -18,8 +17,7 @@ describe("renderError", async () => {
     ];
 
     try {
-      const bundle = await createRollup(true, plugins);
-      await saveAndDiscardBundle(bundle);
+      await compareRollupResults(plugins);
     }
     catch (err) { } // eslint-disable-line no-empty
 

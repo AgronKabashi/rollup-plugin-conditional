@@ -1,17 +1,18 @@
-const ensureArray = input => Array.isArray(input) ? input : [input]; // TODO: Issue #4 - Reduce complexity
+export const ensureArray = input => Array.isArray(input) ? input : [input]; // TODO: Issue #4 - Reduce complexity
 
-export const byMethod = methodNames => plugin => ensureArray(methodNames).some(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
+export const byMethod = names => plugin => ensureArray(names).some(name => plugin.hasOwnProperty(name)); // TODO: Issue #4 - Reduce complexity
 
-export const codeTransformSequencer = (plugin, methodNames) =>
+export const codeTransformSequencer = (plugin, hookNames) =>
   (previousResult = "") => {
     const input = typeof previousResult === "object" ? previousResult.code : previousResult;
-    const methodName = ensureArray(methodNames).find(methodName => plugin.hasOwnProperty(methodName)); // TODO: Issue #4 - Reduce complexity
-    return plugin[methodName](input) || previousResult;
+    const hookName = ensureArray(hookNames).find(hookName => plugin.hasOwnProperty(hookName)); // TODO: Issue #4 - Reduce complexity
+    return plugin[hookName](input) || previousResult;
   };
 
-export const stringConcatSequencer = (plugin, methodName) =>
+export const stringConcatSequencer = (plugin, hookName, separator = "\n") =>
   async (previousResult = "") => {
-    let result = await Promise.resolve(plugin[methodName]());
-    result = result && `\n${result}` || "";
-    return `${previousResult}${result}`;
+    const result = await Promise.resolve(plugin[hookName]());
+    return result ? `${previousResult}${previousResult && separator}${result}` : previousResult;
   };
+
+export const doubleLineStringConcatSequencer = (...args) => stringConcatSequencer(...args, "\n\n");

@@ -1,29 +1,12 @@
-import assert from "assert";
-import { createRollup } from "./utilities/createRollupConfig";
-import { saveAndDiscardBundle } from "./utilities/saveAndDiscardBundle";
+import { compareRollupResults } from "./utilities";
 
 describe("outro", () => {
-  const sourceOutput = `var simpleApp = () => { };
-
-export default simpleApp;`;
-
   it("should add an outro", async () => {
     const plugins = [{
       outro: () => "// Outro"
     }];
 
-    const expected = `${sourceOutput}
-
-
-
-
-// Outro
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should handle promises", async () => {
@@ -33,18 +16,7 @@ export default simpleApp;`;
       }
     ];
 
-    const expected = `${sourceOutput}
-
-
-
-
-// Outro
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 
   it("should add an outro for every plugin", async () => {
@@ -56,26 +28,13 @@ export default simpleApp;`;
         outro () {}
       },
       {
-        outro: () => "// Outro2"
+        outro: () => new Promise(resolve => setTimeout(() => resolve("// Outro2"), 10))
       },
       {
-        outro: () => new Promise(resolve => setTimeout(() => resolve("// Outro3"), 10))
+        outro: () => "// Outro3"
       }
     ];
 
-    const expected = `${sourceOutput}
-
-
-
-
-// Outro1
-// Outro2
-// Outro3
-`;
-
-    const bundle = await createRollup(true, plugins);
-    const code = await saveAndDiscardBundle(bundle);
-
-    assert.equal(code, expected);
+    await compareRollupResults(plugins);
   });
 });

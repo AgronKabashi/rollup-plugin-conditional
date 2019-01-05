@@ -30,8 +30,7 @@ export default {
     ]),
 
     conditional(!isProduction, [
-      filesize(),
-      watch()
+      filesize()
     ])
   ]
 })
@@ -62,7 +61,7 @@ export default {
   ...
   plugins: [
     conditional(false, [ // false here will prevent any of the plugins' life cycle hooks from being executed
-      // This plugin however will create a http(s)-server immediately and outside any of the life cycle hooks
+      // rollup-plugin-serve will however instantiate a http(s)-server immediately and outside any of the life cycle hooks
       // resulting in the http-server running even though we don't want it to.
       serve()
     ])

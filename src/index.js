@@ -1,8 +1,12 @@
 import { promisifiedSequence } from "./promisifiedSequence";
 import { sequence } from "./sequence";
-import { once } from "./once";
+import { firstAvailable } from "./firstAvailable";
 import { all } from "./all";
-import { codeTransformSequencer, stringConcatSequencer } from "./utilities";
+import {
+  codeTransformSequencer,
+  stringConcatSequencer,
+  doubleLineStringConcatSequencer
+} from "./utilities";
 
 export default function conditional (condition, plugins) {
   if (!condition) {
@@ -11,25 +15,26 @@ export default function conditional (condition, plugins) {
 
   plugins = typeof plugins === "function" ? plugins() : plugins; // eslint-disable-line no-param-reassign
   if (!Array.isArray(plugins) || !plugins.length) {
-    return {};
+    return;
   }
 
   return {
-    buildStart: all(plugins, "buildStart"),
-    buildEnd: all(plugins, "buildEnd"),
-    generateBundle: all(plugins, "generateBundle"),
-    load: once(plugins, "load"),
-    resolveId: once(plugins, "resolveId"),
-    options: sequence(plugins, "options"),
-    transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
-    renderChunk: promisifiedSequence(plugins, ["renderChunk", "transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
-    renderStart: all(plugins, "renderStart"),
-    renderError: all(plugins, "renderError"),
-    ongenerate: all(plugins, "ongenerate"), // TODO: Issue #4 - Reduce complexity
-    onwrite: all(plugins, "onwrite"), // TODO: Issue #4 - Reduce complexity
-    intro: promisifiedSequence(plugins, "intro", stringConcatSequencer),
-    outro: promisifiedSequence(plugins, "outro", stringConcatSequencer),
+    name: "rollup-plugin-conditional",
     banner: promisifiedSequence(plugins, "banner", stringConcatSequencer),
-    footer: promisifiedSequence(plugins, "footer", stringConcatSequencer)
+    buildEnd: all(plugins, "buildEnd"),
+    buildStart: all(plugins, "buildStart"),
+    footer: promisifiedSequence(plugins, "footer", stringConcatSequencer),
+    generateBundle: all(plugins, ["generateBundle", "ongenerate", "onwrite"]),
+    intro: promisifiedSequence(plugins, "intro", doubleLineStringConcatSequencer),
+    load: firstAvailable(plugins, "load"),
+    options: sequence(plugins, "options"),
+    outro: promisifiedSequence(plugins, "outro", doubleLineStringConcatSequencer),
+    renderChunk: promisifiedSequence(plugins, ["renderChunk", "transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
+    renderError: all(plugins, "renderError"),
+    renderStart: all(plugins, "renderStart"),
+    resolveId: firstAvailable(plugins, "resolveId"),
+    resolveDynamicImport: firstAvailable(plugins, "resolveDynamicImport"),
+    transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
+    watchChange: sequence(plugins, "watchChange")
   };
 }

@@ -1,9 +1,9 @@
 import assert from "assert";
 import sinon from "sinon";
-import { createRollup } from "./utilities/createRollupConfig";
+import { compareRollupResults } from "./utilities";
 
 describe("buildEnd", () => {
-  it("should call be called when build starts", async () => {
+  it("should be called when build ends", async () => {
     const plugins = [
       {
         buildEnd: sinon.spy()
@@ -13,7 +13,7 @@ describe("buildEnd", () => {
       }
     ];
 
-    await createRollup(true, plugins);
-    assert(plugins.every(plugin => plugin.buildEnd.calledOnce));
+    await compareRollupResults(plugins);
+    assert(plugins.every(plugin => plugin.buildEnd.calledTwice));
   });
 });

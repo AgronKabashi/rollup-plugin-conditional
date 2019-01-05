@@ -1,7 +1,6 @@
 import assert from "assert";
 import sinon from "sinon";
-import { createRollup } from "./utilities/createRollupConfig";
-import { saveAndDiscardBundle } from "./utilities/saveAndDiscardBundle";
+import { compareRollupResults } from "./utilities";
 
 describe("renderStart", async () => {
   it("should be called every time bundle is generated", async () => {
@@ -14,8 +13,7 @@ describe("renderStart", async () => {
       }
     ];
 
-    const bundle = await createRollup(true, plugins);
-    await saveAndDiscardBundle(bundle);
-    assert(plugins.every(plugin => plugin.renderStart.calledOnce));
+    await compareRollupResults(plugins);
+    assert(plugins.every(plugin => plugin.renderStart.calledTwice));
   });
 });

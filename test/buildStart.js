@@ -1,6 +1,6 @@
 import assert from "assert";
 import sinon from "sinon";
-import { createRollup } from "./utilities/createRollupConfig";
+import { compareRollupResults } from "./utilities";
 
 describe("buildStart", () => {
   it("should be called when build starts", async () => {
@@ -13,7 +13,7 @@ describe("buildStart", () => {
       }
     ];
 
-    await createRollup(true, plugins);
-    assert(plugins.every(plugin => plugin.buildStart.calledOnce));
+    await compareRollupResults(plugins);
+    assert(plugins.every(plugin => plugin.buildStart.calledTwice));
   });
 });
