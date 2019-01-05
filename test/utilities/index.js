@@ -20,7 +20,7 @@ const createRollup = (plugins, input = "test/fixtures/simpleApp") =>
     plugins
   });
 
-export async function saveAndDiscardBundle (bundle, id = `${Date.now()}${Math.random()}`) {
+export const saveAndDiscardBundle = async (bundle, id = `${Date.now()}${Math.random()}`) => {
   const file = path.resolve(__dirname, `./output${id}.js`);
 
   try {
@@ -34,7 +34,7 @@ export async function saveAndDiscardBundle (bundle, id = `${Date.now()}${Math.ra
   finally {
     fs.unlinkSync(file);
   }
-}
+};
 
 export const compareRollupResults = async (plugins, input) => {
   const [conditionalBundle, bundle] = await Promise.all([
