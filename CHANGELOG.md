@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 3.1.0
+*2019-01-14*
+* Rewrote internals in order remove overhead and better conform to future rollup API changes.
+* Increased performance and reduced plugin size.
+
 ## Version 3.0.0
 *2019-01-01*
 * Compatibility with rollup v1.0. Contains several under the hood changes such as removal of deprecated options and new API hooks.

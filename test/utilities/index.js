@@ -2,7 +2,7 @@ import fs from "fs";
 import assert from "assert";
 import path from "path";
 import { rollup } from "rollup";
-import conditional from "../../src";
+import conditional from "index";
 
 export const createRollupWithConditional = (condition, plugins, input = "test/fixtures/simpleApp") =>
   rollup({
@@ -13,7 +13,7 @@ export const createRollupWithConditional = (condition, plugins, input = "test/fi
     ]
   });
 
-const createRollup = (plugins, input = "test/fixtures/simpleApp") =>
+export const createRollup = (plugins, input = "test/fixtures/simpleApp") =>
   rollup({
     input,
     treeshake: false,

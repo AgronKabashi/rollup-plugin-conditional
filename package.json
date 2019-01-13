@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Conditionally execute rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "module": "src/index.js",

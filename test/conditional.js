@@ -44,12 +44,17 @@ describe("conditional", () => {
       conditional(true, [
         {
           load: spy
-        }
+        },
+        conditional(true, [
+          {
+            load: spy
+          }
+        ])
       ])
     ];
 
     await createRollupWithConditional(true, plugins);
-    assert(spy.calledTwice);
+    assert(spy.calledThrice);
   });
 
   it("accepts a function that returns an array of plugins for deferred execution", async () => {

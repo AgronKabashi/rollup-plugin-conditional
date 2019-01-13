@@ -1,4 +1,4 @@
-import { byMethod } from "./utilities";
+import { byHook } from "./utilities";
 
 /**
  * Run the specified plugins in sequence, passing the output to the next plugin in the queue
@@ -8,7 +8,7 @@ import { byMethod } from "./utilities";
  */
 export const sequence = (plugins, hookName) =>
   (...args) => {
-    const [firstPlugin, ...restPlugins] = plugins.filter(byMethod(hookName));
+    const [firstPlugin, ...restPlugins] = plugins.filter(byHook(hookName));
 
     if (!restPlugins.length && !firstPlugin) {
       return null;
@@ -16,5 +16,5 @@ export const sequence = (plugins, hookName) =>
 
     const startingValue = firstPlugin[hookName](...args);
 
-    return restPlugins.reduce((result, plugin) => plugin[hookName](result), startingValue);
+    return restPlugins.reduce((result, plugin) => plugin[hookName](result) || result, startingValue);
   };

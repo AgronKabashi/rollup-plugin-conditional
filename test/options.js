@@ -1,7 +1,9 @@
 import assert from "assert";
 import fs from "fs";
 import path from "path";
-import { createRollupWithConditional } from "./utilities";
+import sinon from "sinon";
+import { createRollupWithConditional, createRollup } from "./utilities";
+import conditional from "index";
 
 describe("options", () => {
   const resolvedPath = path.resolve(__dirname, "fixtures/resolvedFileContents.js");
@@ -31,6 +33,9 @@ describe("options", () => {
         })
       },
       {
+        options: () => undefined
+      },
+      {
         options: input => ({
           ...input,
           input: "nonexisting file"
@@ -41,11 +46,33 @@ describe("options", () => {
           ...input,
           input: resolvedPath
         })
+      },
+      {
+        options: () => null
       }
     ];
 
     const args = await createRollupWithConditional(true, plugins);
 
     assert.equal(args.cache.modules[0].code, resolvedContent);
+  });
+
+  it("runs non-conditional options only once", async () => {
+    const conditionalSpy = sinon.spy();
+    const externalOptionSpy = sinon.spy();
+    const plugins = [
+      {
+        options: externalOptionSpy
+      },
+      conditional(true, [
+        {
+          options: conditionalSpy
+        }
+      ])
+    ];
+
+    await createRollup(plugins);
+
+    assert(externalOptionSpy.calledOnce);
   });
 });
