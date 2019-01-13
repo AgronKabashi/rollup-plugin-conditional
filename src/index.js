@@ -1,12 +1,4 @@
-import { promisifiedSequence } from "./promisifiedSequence";
 import { sequence } from "./sequence";
-import { firstAvailable } from "./firstAvailable";
-import { all } from "./all";
-import {
-  codeTransformSequencer,
-  stringConcatSequencer,
-  doubleLineStringConcatSequencer
-} from "./utilities";
 
 export default function conditional (condition, plugins) {
   if (!condition) {
@@ -18,23 +10,20 @@ export default function conditional (condition, plugins) {
     return;
   }
 
+  const conditionalUniqueId = `${Date.now()}${Math.random()}`;
+
   return {
     name: "rollup-plugin-conditional",
-    banner: promisifiedSequence(plugins, "banner", stringConcatSequencer),
-    buildEnd: all(plugins, "buildEnd"),
-    buildStart: all(plugins, "buildStart"),
-    footer: promisifiedSequence(plugins, "footer", stringConcatSequencer),
-    generateBundle: all(plugins, ["generateBundle", "ongenerate", "onwrite"]),
-    intro: promisifiedSequence(plugins, "intro", doubleLineStringConcatSequencer),
-    load: firstAvailable(plugins, "load"),
-    options: sequence(plugins, "options"),
-    outro: promisifiedSequence(plugins, "outro", doubleLineStringConcatSequencer),
-    renderChunk: promisifiedSequence(plugins, ["renderChunk", "transformChunk", "transformBundle"], codeTransformSequencer), // TODO: Issue #4 - Reduce complexity
-    renderError: all(plugins, "renderError"),
-    renderStart: all(plugins, "renderStart"),
-    resolveId: firstAvailable(plugins, "resolveId"),
-    resolveDynamicImport: firstAvailable(plugins, "resolveDynamicImport"),
-    transform: promisifiedSequence(plugins, "transform", codeTransformSequencer),
-    watchChange: sequence(plugins, "watchChange")
+    conditionalUniqueId,
+    options: inputOptions => {
+      const conditionalPluginIndex = inputOptions.plugins.findIndex(plugin => plugin.conditionalUniqueId === conditionalUniqueId);
+      if (conditionalPluginIndex >= 0) {
+        // Inject the supplied plugins into conditional's position
+        inputOptions.plugins.splice(conditionalPluginIndex, 1, ...plugins);
+      }
+
+      // The options hook needs to be called manually for the supplied plugins
+      return sequence(plugins, "options")(inputOptions);
+    }
   };
 }
