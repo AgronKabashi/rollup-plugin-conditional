@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 3.1.1
+*2019-01-14*
+* Decreased rollup peer-dependency version.
+* Added backwards compatbility map to readme.
+* Updated rollup dependency to v1.1
+
 ## Version 3.1.0
 *2019-01-14*
 * Rewrote internals in order remove overhead and better conform to future rollup API changes.

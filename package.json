@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-conditional",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Conditionally execute rollup plugins",
   "main": "build/rollup-plugin-conditional.js",
   "module": "src/index.js",
@@ -35,11 +35,11 @@
     "eslint": "^5.12.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
-    "rollup": "^1.0.2",
+    "rollup": "^1.1.0",
     "sinon": "^7.2.2"
   },
   "peerDependencies": {
-    "rollup": ">=1.0"
+    "rollup": ">=0.57"
   },
   "repository": {
     "type": "git",

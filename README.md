@@ -84,5 +84,14 @@ export default {
 };
 ```
 
+## Backwards Compatibility Table
+
+| Rollup Version  | Plugin Version            |
+|-----------------|---------------------------|
+| 0.57+           | 3.x *(Recommended)*       |
+| 0.62 - 0.68.2   | 2.x                       |
+| < 62            | 1.x                       |
+
+
 ## Versioning
 This project uses semantic versioning
