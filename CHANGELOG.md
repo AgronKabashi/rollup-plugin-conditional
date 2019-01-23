@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.1.2
+*2019-01-23*
+* Updated readme. Plugin is now in maintenance mode, only bugs will be addressed.
+
 ## Version 3.1.1
 *2019-01-14*
 * Decreased rollup peer-dependency version.

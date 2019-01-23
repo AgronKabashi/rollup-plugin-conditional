@@ -1,8 +1,31 @@
 # rollup-plugin-conditional
 A proxy plugin for conditionally executing rollup plugins.
+<br>
+<strong>NOTE:</strong> This plugin has entered maintenance only mode, meaning that only bugs will be fixed. See **`But do I really need it`** section to accomplish the same thing without a plugin.
 
 ## Why
 There are times when you only want to run a plugin if certain conditions are met. This plugin aims to simplify that setup.
+
+## But do I really need it?
+Not really, in relatively newer versions on rollup you can accomplish the same thing using a simple spread mechanic:
+
+```js
+export default {
+  ...
+  plugins: [
+    ...isProduction ? [
+      licence(),
+      strip(),
+      uglify(),
+      gzip()
+    ] : []
+  ]
+};
+```
+
+In the end, this syntax is better because:
+* It reduces the cost of overhead and increases performance slightly
+* It reduces your dependencies by one
 
 ## Installation
 
